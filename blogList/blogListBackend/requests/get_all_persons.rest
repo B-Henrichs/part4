@@ -1,0 +1,18 @@
+GET https://phonebook-bob.herokuapp.com/api/persons/
+
+###
+POST http://localhost:3001/api/persons/ HTTP/1.1
+content-type: application/json
+
+{  "name": "v",
+    "number": "d"
+  }
+
+
+###
+GET http://localhost:3001/api/info/ HTTP/1.1
+content-type: application/json
+
+###
+GET http://localhost:3001/api/persons/someID HTTP/1.1
+content-type: application/json
