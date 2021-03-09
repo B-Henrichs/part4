@@ -1,12 +1,10 @@
 GET https://phonebook-bob.herokuapp.com/api/persons/
 
 ###
-POST http://localhost:3001/api/persons/ HTTP/1.1
+POST http://localhost:3001/api/blogs/ HTTP/1.1
 content-type: application/json
 
-{  "name": "v",
-    "number": "d"
-  }
+{ "title": "test", "author": "test", "url": "test", "likes": "5", "userId":"6047c325d14f7f089cce2e6d" }
 
 
 ###
@@ -16,3 +14,13 @@ content-type: application/json
 ###
 GET http://localhost:3001/api/persons/someID HTTP/1.1
 content-type: application/json
+
+###
+POST http://localhost:3001/api/users/ HTTP/1.1
+content-type: application/json
+
+{ "username": "test1", "name": "test", "passwordHash": "$2a$10$sM/0w5PMBTTp.Edyq9CNK.lMud1j.2e7qqkINM2P1jLsn43NAAinS", "blogs": "", "userId":"6047c325d14f7f089cce2e6d" }
+
+
+
+

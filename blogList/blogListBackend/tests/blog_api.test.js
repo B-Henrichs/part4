@@ -5,8 +5,9 @@ const api = supertest(app)
 const Blog = require('../models/blog')
 //const blogslist = require('../utils/blogs_for_test')
 const helper = require('./test_helper')
+const User = require('../models/user')
 
-beforeEach(async () => {
+const clearTable = beforeEach(async () => {
     await Blog.deleteMany({})
     console.log('cleared')
 
@@ -19,6 +20,7 @@ beforeEach(async () => {
     })
  
 describe('when you querey the initital database',() => {
+  clearTable()
   test('blogs are returned as json', async () => {
     await api
       .get('/api/blogs')
@@ -41,6 +43,7 @@ describe('when you querey the initital database',() => {
 })
 
 describe('viewing a specific blog', () => {
+  clearTable()
   test('a specific blog can be viewed', async () => {
     const blogsAtStart = await helper.blogsInDb()
   
@@ -77,6 +80,7 @@ describe('viewing a specific blog', () => {
 
 
 describe('addition of a new blog', () => {
+  clearTable()
   test('succeeds with valid blog', async () => {
     const newBlog = {
         title: "test blog",
@@ -174,6 +178,7 @@ describe('addition of a new blog', () => {
  
  
 describe('blogs can be changed with put and delete', () =>{
+  clearTable()
   test('a blog can be updated with put', async ()=> {
     
     
@@ -220,6 +225,7 @@ describe('blogs can be changed with put and delete', () =>{
 })  
   
 describe('data is structured properly', () => {
+  clearTable()
   test ('id is not _id', async () => {
     const blogsAtStart = await helper.blogsInDb()
   
@@ -234,6 +240,57 @@ describe('data is structured properly', () => {
     expect(processedBlogToView.id).toBeDefined()
   })
 })  
+
+describe('when there is initially one user in db', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+    const user = new User({ username: 'root', password: 'sekret' })
+    await user.save()
+  })
+
+  test('creation succeeds with a fresh username', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'mluukkai',
+      name: 'Matti Luukkainen',
+      password: 'salainen',
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
+
+    const usernames = usersAtEnd.map(u => u.username)
+    expect(usernames).toContain(newUser.username)
+  })
+
+  test('creation fails with proper statuscode and message if username already taken', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'root',
+      name: 'Superuser',
+      password: 'salainen',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body.error).toContain('`username` to be unique')
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+})
   
 
  
