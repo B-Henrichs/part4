@@ -36,6 +36,7 @@ const uniqueValidator = require('mongoose-unique-validator')
 
   blogSchema.plugin(uniqueValidator)
 
+ /* old settings, trying settings from answer
   blogSchema.set('toJSON', {
     virtuals: true,
     autoIndex: false,
@@ -43,6 +44,15 @@ const uniqueValidator = require('mongoose-unique-validator')
       delete converted._id;
       delete converted.__v;
     }
+})*/
+
+
+blogSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
 })
 
 module.exports = mongoose.model('Blog', blogSchema)

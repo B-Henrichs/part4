@@ -2,6 +2,19 @@ const dummy = (blogs) => {
   return 1
 }
 
+const totalLikes = (blogs) => {
+  const likesAtEnd =[]
+  blogs.map(blog =>{
+    likesAtEnd.push(blog.likes)
+  })
+  const reducer = (acc, item) => {
+    return acc + item
+  }
+
+  return likesAtEnd.reduce(reducer, 0)
+}
+
+
 const averageLikes = (blogs) => {
   const blogLikes = []
   blogs.map(blog => {
@@ -28,6 +41,9 @@ const highestLikes = (blogs) => {
   return selectedBlog
 }
 
+
+
+
 /*const mostBlogs = (blogs) => {
   const blogCount =[]
   blogs.map(blog =>{
@@ -35,7 +51,7 @@ const highestLikes = (blogs) => {
   })
 }*/
 
-module.exports = { dummy, averageLikes, highestLikes }
+module.exports = { dummy, averageLikes, highestLikes, totalLikes }
 
 
 

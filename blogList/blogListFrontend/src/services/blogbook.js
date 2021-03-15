@@ -3,6 +3,12 @@ import axios from 'axios'
 //sets location to pull from
 const baseUrl = '/api/blogs'
 
+let token = null
+
+const setToken = newToken => {
+  token = `bearer ${newToken}`
+}
+
 //first pass sets base phonebook from json server
 const getAll = () => {
   const request = axios.get(baseUrl)
@@ -10,10 +16,22 @@ const getAll = () => {
 }
 
 //adding an entry
-const create = newObject => {
+/*const create = newObject => {
   const request = axios.post(baseUrl, newObject)
   return request.then(response => response.data)
+}*/
+const create = async newObject => {
+  const config = {
+    headers: { Authorization: token },
+  }
+
+  const response = await axios.post(baseUrl, newObject, config)
+  return response.data
 }
+
+
+
+
 
 //changing a number of an existing entry
 const update = (id, newObject) => {
@@ -29,7 +47,7 @@ const removeEntry = (blog) =>{
   }
 
 const services = {
-  getAll, create, update, removeEntry
+  getAll, create, update, removeEntry, setToken
 }
 
 export default services

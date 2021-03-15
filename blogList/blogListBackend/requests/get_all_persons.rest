@@ -3,8 +3,14 @@ GET https://phonebook-bob.herokuapp.com/api/persons/
 ###
 POST http://localhost:3001/api/blogs/ HTTP/1.1
 content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYwNGE3MmZkM2M0N2I0MWI1MDQ0OTNlZiIsImlhdCI6MTYxNTQ5MTk2MSwiZXhwIjoxNjE1NDk1NTYxfQ.ai6viu-lvCQ_90_mxN0JVfNwvtcyYsRi43kX5TLyTa8
 
-{ "title": "test", "author": "test", "url": "test", "likes": "5", "userId":"6047c325d14f7f089cce2e6d" }
+
+{ "title": "tesdhf",
+ "author": "tessdh",
+  "url": "tesdzfg", 
+  "likes": "5", 
+  "userId":"604914badf0ca72efc4fc1ed" }
 
 
 ###
@@ -19,8 +25,39 @@ content-type: application/json
 POST http://localhost:3001/api/users/ HTTP/1.1
 content-type: application/json
 
-{ "username": "test1", "name": "test", "passwordHash": "$2a$10$sM/0w5PMBTTp.Edyq9CNK.lMud1j.2e7qqkINM2P1jLsn43NAAinS", "blogs": "", "userId":"6047c325d14f7f089cce2e6d" }
+{ "username": "boi",
+  "name":"bobby",
+  "password": "shft"
+  
+}
 
 
+###
+POST http://localhost:3001/api/login/ 
+Content-type: application/json
 
+{
+    "username": "test1",
+    "password": "sekret"
+}
+###
+POST http://localhost:3001/api/blogs/ 
+Content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvaSIsImlkIjoiNjA0ZmE4YjliNzUyMDIyMmU0MjU4OWZhIiwiaWF0IjoxNjE1ODMzMjg3fQ.R9QD5RJWhmymj8H8m2Y2h3e2fIhZJJ_29kLaLVkE2U4
+
+    { "title": "test8",
+ "author": "test8",
+  "url": "test8", 
+  "likes": "5",
+  "userId": "604914badf0ca72efc4fc1ed"}
+###
+DELETE http://localhost:3001/api/blogs/604a654e283ee20cc82a6809/
+Content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvaSIsImlkIjoiNjA0YmJhN2UyZTk4MzkxOTI4YzM5ZThjIiwiaWF0IjoxNjE1NTc1NzI4fQ.SBpF4LzyksRn8XTNODHAEGyo-XiFAHfvVIycddcnfb4
+
+    { "title": "tesdhf",
+ "author": "tessdh",
+  "url": "tesdzfg", 
+  "likes": "5", 
+  "userId":"604914badf0ca72efc4fc1ed" }
 

@@ -1,5 +1,5 @@
 //import react + components
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useImperativeHandle } from 'react'
 import Form from './components/Form'
 import Blog from './components/Blog'
 import Search from './components/Search'
@@ -7,6 +7,8 @@ import Blogs from './components/Blogs'
 import blogService from './services/blogbook'
 import Notification from './components/Notification'
 import Error from './components/Error'
+import Login from './components/Login'
+import loginService from './services/login'
 
 
 
@@ -24,6 +26,9 @@ const App = () => {
   const [ newSearch, setNewSearch] = useState('')
   const [alertMessage, setAlertMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
+  const [username, setNewUsername] = useState('') 
+  const [password, setNewPassword] = useState('') 
+  const [user, setUser] = useState(null)
 
   //use axios to get import db.json file requires json server to be run
   useEffect(() => {
@@ -194,10 +199,38 @@ console.log(blogToUpdate)
         setNewLikes('')
   };
 
+  
+  //handles logging in
 
-    
-    
-    
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    try {
+      const user = await loginService.login({
+        username, password,
+      })
+
+      blogService.setToken(user.token)
+      setUser(user)
+      console.log('logging in with', username, password)
+      setNewUsername('')
+      setNewPassword('')
+    } catch (exception) {
+      setErrorMessage('Wrong credentials')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
+  
+
+
+  const handlePasswordChange =(event) => {
+    setNewPassword(event.target.value)
+  }
+const handleUsernameChange =(event) => {
+  setNewUsername(event.target.value)
+}
   
   //these change the fields when user types
   const handleTitleChange = (event) => {
@@ -223,7 +256,7 @@ console.log(blogToUpdate)
   
   //filters the blogs array to only display entrys that match the search field
   const blogsToShow =  blogs.filter(blog => blog.title.toLowerCase().includes(newSearch) === true)
-    
+    console.log('user looks like', user)
   
   return (
 
@@ -232,13 +265,22 @@ console.log(blogToUpdate)
       <h1>Blog List</h1>
       <Error message= {errorMessage}/>
       <Notification message={alertMessage} />
-      
+   
       <h3>Search</h3>
       <Search newSearch={newSearch} handleSearchChange={handleSearchChange} />
       <h3>Update Blog List</h3>
+
+      {user === null ?
+      <Login handlePasswordChange={handlePasswordChange} handleUsernameChange={handleUsernameChange} handleLogin={handleLogin} username={username} password={password}/> :
+      <div>
+      <p>{user.username} logged-in</p>
       <Form addBlog={handleFormSubmit} newTitle={newTitle} handleTitleChange={handleTitleChange} newAuthor={newAuthor} handleAuthorChange={handleAuthorChange} newUrl={newUrl}
       handleUrlChange={handleUrlChange} newLikes={newLikes} handleLikesChange={handleLikesChange}/>
       <Blogs blogsToShow={blogsToShow} Blog={Blog} removeEntry={removeEntry}/>
+      </div>
+    }
+      
+      
      
     </div>
     
