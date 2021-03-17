@@ -9,7 +9,7 @@ const setToken = newToken => {
   token = `bearer ${newToken}`
 }
 
-//first pass sets base phonebook from json server
+//first pass sets base blogbook from json server
 const getAll = () => {
   const request = axios.get(baseUrl)
   return request.then(response => response.data)  
@@ -34,9 +34,14 @@ const create = async newObject => {
 
 
 //changing a number of an existing entry
-const update = (id, newObject) => {
-  const request = axios.put(`${baseUrl}/${id}`, newObject)
-  return request.then(response => response.data)
+const update = async newObject => {
+  //const request = axios.put(`${baseUrl}/${id}`, newObject)
+  const config = {
+    headers: { Authorization: token },
+  }
+
+  const response = await axios.put(`${baseUrl}/${newObject.id}`, newObject, config)
+  return response.data
 }
 
 //deletes entry

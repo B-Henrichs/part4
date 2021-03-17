@@ -1,3 +1,8 @@
+
+//#############################
+//better way of logging to console and handling errors
+//#############################
+
 const info = (...params) => {
   if (process.env.NODE_ENV !== 'test') { 
     console.log(...params)

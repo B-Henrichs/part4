@@ -1,5 +1,13 @@
+//##################################
+// these are instructions on how to 
+// handle requests made with http
+//##################################
+
+// uses the default router method of express
 const blogsRouter = require('express').Router()
+//imports token handling 
 const jwt = require('jsonwebtoken')
+// imports data structure definitions
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
@@ -10,13 +18,13 @@ const User = require('../models/user')
 
 // handles requests to server 
   // @ /blogs
-  // added map method from answers page
-  // seemed to function before
-// removed map method since it wasnt in these solutions
 
   blogsRouter.get('/', async (request, response) => {
+// declares a blogs variable that will wait for the response from
+
     const blogs = await Blog
     .find({}).populate('user', { username: 1, name: 1 })
+
   response.json(blogs)
   })
 
@@ -41,7 +49,7 @@ blogsRouter.delete('/:id', async (request, response) => {
   response.status(204).end() 
 })
 
-
+// handles changes made with .put
 blogsRouter.put('/:id', async (request, response) => {
   const blog = request.body 
 

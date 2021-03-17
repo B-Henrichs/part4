@@ -1,3 +1,6 @@
+//#################
+//this file defines how blogs are structured. the types of the data what requirements they have
+//################
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
@@ -33,20 +36,13 @@ const uniqueValidator = require('mongoose-unique-validator')
     
   })
   
-
+//use the plugin to that checks if values are unique
   blogSchema.plugin(uniqueValidator)
 
- /* old settings, trying settings from answer
-  blogSchema.set('toJSON', {
-    virtuals: true,
-    autoIndex: false,
-    transform: (doc, converted) => {
-      delete converted._id;
-      delete converted.__v;
-    }
-})*/
+ 
 
-
+// sets the scheme and passes it paramaters for how the data
+// should be viewed
 blogSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()

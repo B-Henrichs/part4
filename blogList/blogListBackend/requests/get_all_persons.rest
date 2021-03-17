@@ -25,9 +25,9 @@ content-type: application/json
 POST http://localhost:3001/api/users/ HTTP/1.1
 content-type: application/json
 
-{ "username": "boi",
-  "name":"bobby",
-  "password": "shft"
+{ "username": "root",
+  "name":"bobbi",
+  "password": "sekret"
   
 }
 
@@ -61,3 +61,13 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJva
   "likes": "5", 
   "userId":"604914badf0ca72efc4fc1ed" }
 
+###
+PUT http://localhost:3001/api/blogs/6050d66270b73e1b186dbb2c
+Content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYwNTBkNjJmNzBiNzNlMWIxODZkYmIyYiIsImlhdCI6MTYxNTkxMDU0Nn0.IPuM5UGVdHiVyUhwMDfEN86T3tVKEBtHgsWWNZe4NuM
+
+    { "title": "test",
+ "author": "test",
+  "url": "test", 
+  "likes": "5",
+  "userId": "604914badf0ca72efc4fc1ed"}

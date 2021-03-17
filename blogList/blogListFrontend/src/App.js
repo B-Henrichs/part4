@@ -1,8 +1,9 @@
 //import react + components
-import React, { useState, useEffect, useImperativeHandle } from 'react'
-import Form from './components/Form'
+import React, { useState, useEffect } from 'react'
+
 import Blog from './components/Blog'
 import Search from './components/Search'
+import Form from './components/Form'
 import Blogs from './components/Blogs'
 import blogService from './services/blogbook'
 import Notification from './components/Notification'
@@ -29,8 +30,34 @@ const App = () => {
   const [username, setNewUsername] = useState('') 
   const [password, setNewPassword] = useState('') 
   const [user, setUser] = useState(null)
-
+  const [loginVisible, setLoginVisible] = useState(false)
+  /*
+  useEffect(() => {
+    const initialBook = 'something'
+    if (initialBook){
+      setBlogs(initialBook)
+    }
+    blogService
+       .getAll()
+       .then(initialBook => {
+         setBlogs(initialBook)     
+   }).catch(error =>{
+     setErrorMessage(
+       `unable to connect to server`
+     )
+     setTimeout(() => {
+       setErrorMessage(null)
+     }, 5000)
+   })
+   }, [])
+  
+  
+  
+  */
+  
+  
   //use axios to get import db.json file requires json server to be run
+  
   useEffect(() => {
    blogService
       .getAll()
@@ -46,6 +73,14 @@ const App = () => {
   })
   }, [])
  
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
 
 
 //handles button click when the title field is a new value
@@ -58,7 +93,7 @@ const App = () => {
       url: newUrl,
       likes: newLikes
     }
-   
+    console.log('new',blogObject)
       //use axios to add blog to to blogs state array
        blogService
       .create(blogObject)
@@ -98,16 +133,16 @@ const App = () => {
 
     // uses find method on blogs array to match change with existing entry 
     const blogToUpdate = blogs.find((item) => item.title === newTitle)
-    ;
+    
     //uses copy method to return a new object with old title and new other info
-    const updatedBlog = { ...blogToUpdate, author: newAuthor, url: newUrl, likes: newLikes };
+    const updatedBlog = { ...blogToUpdate, author: newAuthor, url: newUrl, likes: newLikes};
 
     //only executes if user selects "ok" in prompt window
     if (confirm) {
-
+      console.log('update',updatedBlog )
       //axios put method to update the server
       blogService
-        .update(updatedBlog.id, updatedBlog)
+        .update(updatedBlog)
         .then((response) => {
           setAlertMessage(
             `Updated ${updatedBlog.title}'s entry`
@@ -199,9 +234,31 @@ console.log(blogToUpdate)
         setNewLikes('')
   };
 
-  
-  //handles logging in
+  // handles logging in
+  const handleLogin = (event) => {
+    event.preventDefault()
+    
+      loginService.login({
+        username, password,
+      }).then(returnedUser => {
+        window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(returnedUser))
+      
+      blogService.setToken(returnedUser.token)
+      setUser(returnedUser)
+      console.log('logging in with', username, password)
+      setNewUsername('')
+      setNewPassword('')
+      
+    }).catch (error => {
+      setErrorMessage('Wrong credentials')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+  })
+}
 
+/*##### this is the async/await version of the function above#######
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -209,6 +266,9 @@ console.log(blogToUpdate)
         username, password,
       })
 
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(user)
+      ) 
       blogService.setToken(user.token)
       setUser(user)
       console.log('logging in with', username, password)
@@ -221,10 +281,20 @@ console.log(blogToUpdate)
       }, 5000)
     }
   }
+######################################################################*/
 
-  
 
+ // handles logout
+const logout = (event) => {
+  event.preventDefault();
+  const confirm = window.confirm("Do you want to logout?");
+  if(confirm){
+window.localStorage.removeItem('loggedBlogappUser')
+setUser(null)
+  }
+}
 
+//handles user input at login
   const handlePasswordChange =(event) => {
     setNewPassword(event.target.value)
   }
@@ -245,9 +315,6 @@ const handleUsernameChange =(event) => {
   const handleLikesChange = (event) => {
     setNewLikes(event.target.value)
     }
-
-
-
   const handleSearchChange = (event) => {
   setNewSearch(event.target.value)
   }
@@ -273,7 +340,7 @@ const handleUsernameChange =(event) => {
       {user === null ?
       <Login handlePasswordChange={handlePasswordChange} handleUsernameChange={handleUsernameChange} handleLogin={handleLogin} username={username} password={password}/> :
       <div>
-      <p>{user.username} logged-in</p>
+      <p>{user.username} logged-in</p><button onClick={logout}>Logout</button>
       <Form addBlog={handleFormSubmit} newTitle={newTitle} handleTitleChange={handleTitleChange} newAuthor={newAuthor} handleAuthorChange={handleAuthorChange} newUrl={newUrl}
       handleUrlChange={handleUrlChange} newLikes={newLikes} handleLikesChange={handleLikesChange}/>
       <Blogs blogsToShow={blogsToShow} Blog={Blog} removeEntry={removeEntry}/>

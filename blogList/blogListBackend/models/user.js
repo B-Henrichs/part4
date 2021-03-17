@@ -1,3 +1,9 @@
+//#################
+// this files defines the structure of a user and how 
+// the data should be viewed. it declares the types
+// and requirements for the data entered
+//################
+
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
@@ -30,6 +36,7 @@ userSchema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
+    //###########  IMPORTANT!!! ##############
     // the passwordHash should not be revealed
     delete returnedObject.passwordHash
   }

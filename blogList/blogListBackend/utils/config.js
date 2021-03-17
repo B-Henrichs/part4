@@ -1,3 +1,9 @@
+
+//######################
+//tells index.js to look at .env file for location of port
+// .env port defined by mongodb (this time atlas)
+//#####################
+
 require('dotenv').config()
 
 const PORT = process.env.PORT
