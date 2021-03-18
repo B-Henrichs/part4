@@ -1,5 +1,5 @@
 //import react + components
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import Blog from './components/Blog'
 import Search from './components/Search'
@@ -10,7 +10,7 @@ import Notification from './components/Notification'
 import Error from './components/Error'
 import Login from './components/Login'
 import loginService from './services/login'
-
+import Togglable from './components/Togglable'
 
 
 
@@ -20,17 +20,18 @@ const App = () => {
 
   //establishes states
   const [ blogs, setBlogs ] = useState([]) 
+  
   const [ newTitle, setNewTitle ] = useState('')
   const [ newAuthor, setNewAuthor ] = useState('')
   const [ newUrl, setNewUrl ] = useState('')
   const [ newLikes, setNewLikes ] = useState('')
+
   const [ newSearch, setNewSearch] = useState('')
   const [alertMessage, setAlertMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [username, setNewUsername] = useState('') 
   const [password, setNewPassword] = useState('') 
   const [user, setUser] = useState(null)
-  const [loginVisible, setLoginVisible] = useState(false)
   /*
   useEffect(() => {
     const initialBook = 'something'
@@ -85,7 +86,7 @@ const App = () => {
 
 //handles button click when the title field is a new value
   const addBlog = () => {
-    
+    blogFormRef.current.toggleVisibility()
     // blog generated from  entry fields
     const blogObject = {
       title: newTitle,
@@ -136,9 +137,10 @@ const App = () => {
     
     //uses copy method to return a new object with old title and new other info
     const updatedBlog = { ...blogToUpdate, author: newAuthor, url: newUrl, likes: newLikes};
-
+console.log('updated blog looks like', updatedBlog)
     //only executes if user selects "ok" in prompt window
     if (confirm) {
+      blogFormRef.current.toggleVisibility()
       console.log('update',updatedBlog )
       //axios put method to update the server
       blogService
@@ -247,6 +249,10 @@ console.log(blogToUpdate)
       blogService.setToken(returnedUser.token)
       setUser(returnedUser)
       console.log('logging in with', username, password)
+      setAlertMessage(`Welcome ${username}`)
+      setTimeout(() => {
+        setAlertMessage(null)
+      }, 5000)
       setNewUsername('')
       setNewPassword('')
       
@@ -257,6 +263,8 @@ console.log(blogToUpdate)
       }, 5000)
   })
 }
+
+
 
 /*##### this is the async/await version of the function above#######
   const handleLogin = async (event) => {
@@ -291,6 +299,11 @@ const logout = (event) => {
   if(confirm){
 window.localStorage.removeItem('loggedBlogappUser')
 setUser(null)
+setAlertMessage(`Goodbye`)
+      setTimeout(() => {
+        setAlertMessage(null)
+      }, 5000)
+
   }
 }
 
@@ -319,12 +332,14 @@ const handleUsernameChange =(event) => {
   setNewSearch(event.target.value)
   }
 
-
+  const blogFormRef = useRef()
   
   //filters the blogs array to only display entrys that match the search field
   const blogsToShow =  blogs.filter(blog => blog.title.toLowerCase().includes(newSearch) === true)
     console.log('user looks like', user)
   
+
+    
   return (
 
       //layout and call components
@@ -333,22 +348,25 @@ const handleUsernameChange =(event) => {
       <Error message= {errorMessage}/>
       <Notification message={alertMessage} />
    
-      <h3>Search</h3>
+      <Togglable buttonLabel="search">
       <Search newSearch={newSearch} handleSearchChange={handleSearchChange} />
-      <h3>Update Blog List</h3>
-
+      </Togglable>
       {user === null ?
-      <Login handlePasswordChange={handlePasswordChange} handleUsernameChange={handleUsernameChange} handleLogin={handleLogin} username={username} password={password}/> :
+      <div> 
+      <Togglable buttonLabel="login">
+      <Login handlePasswordChange={handlePasswordChange} handleUsernameChange={handleUsernameChange} handleLogin={handleLogin} username={username} password={password}/>
+      </Togglable></div>:
       <div>
-      <p>{user.username} logged-in</p><button onClick={logout}>Logout</button>
+        <button onClick={logout}>Logout</button>
+        <Togglable buttonLabel="add blog" ref={blogFormRef}>
       <Form addBlog={handleFormSubmit} newTitle={newTitle} handleTitleChange={handleTitleChange} newAuthor={newAuthor} handleAuthorChange={handleAuthorChange} newUrl={newUrl}
-      handleUrlChange={handleUrlChange} newLikes={newLikes} handleLikesChange={handleLikesChange}/>
-      <Blogs blogsToShow={blogsToShow} Blog={Blog} removeEntry={removeEntry}/>
+      handleUrlChange={handleUrlChange} newLikes={newLikes} handleLikesChange={handleLikesChange}
+      />
+      </Togglable>
+        <Blogs blogsToShow={blogsToShow} Blog={Blog} removeEntry={removeEntry}/>
       </div>
-    }
-      
-      
-     
+      }
+  
     </div>
     
   )

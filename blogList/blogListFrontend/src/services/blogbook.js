@@ -44,9 +44,14 @@ const update = async newObject => {
   return response.data
 }
 
+
+
 //deletes entry
 const removeEntry = (blog) =>{
-  const request =axios.delete(`${baseUrl}/${blog}`)
+  const config = {
+    headers: { Authorization: token },
+  }
+  const request =axios.delete(`${baseUrl}/${blog}`,config)
     return( request)
     .then(response => response.data)
   }

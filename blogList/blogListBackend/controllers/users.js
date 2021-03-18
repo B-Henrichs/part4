@@ -1,5 +1,6 @@
 //####################
-// this file handles 
+// this file handles creation of and requests of users
+// ###################
 
 
 

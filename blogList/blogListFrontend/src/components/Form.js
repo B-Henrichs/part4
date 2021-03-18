@@ -1,7 +1,10 @@
 import React from 'react'
 
 const Form = ({addBlog, newTitle, handleTitleChange, newAuthor, handleAuthorChange, newUrl, handleUrlChange, newLikes, handleLikesChange}) => {
+  
   return (
+    <div>
+    <h3>Update Blog List</h3>
   <form onSubmit ={addBlog}>
     <div>
       title: <input 
@@ -27,7 +30,7 @@ const Form = ({addBlog, newTitle, handleTitleChange, newAuthor, handleAuthorChan
       <button type="submit">update Blog list</button>
     </div>
   </form>
-    
+  </div>
   )
 }
 export default Form
